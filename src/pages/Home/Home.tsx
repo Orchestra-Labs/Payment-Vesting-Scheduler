@@ -1,10 +1,10 @@
 import { Provider } from 'jotai';
-import { SwapSection } from '@/sections';
+import { MainSection } from '@/sections';
 
 export const Home = () => {
   return (
     <Provider>
-      <SwapSection />
+      <MainSection />
     </Provider>
   );
 };

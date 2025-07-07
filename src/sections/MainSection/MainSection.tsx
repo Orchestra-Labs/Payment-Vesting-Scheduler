@@ -1,11 +1,7 @@
-import { useAtomValue } from 'jotai';
 import waves2 from '@/assets/images/waves-test.svg';
-import { ErrorMessageAtom } from './atoms';
-import { AirdropInfoContainer } from '@/components';
+import { VestingForm } from '@/components';
 
-export const SwapSection = () => {
-  const errorMessage = useAtomValue(ErrorMessageAtom);
-
+export const MainSection = () => {
   return (
     <div className="min-h-screen relative">
       <div
@@ -17,10 +13,7 @@ export const SwapSection = () => {
           className="flex flex-col max-w-[882px] text-center items-center gap-4"
           style={{ marginTop: '6rem', marginBottom: '2rem' }}
         >
-          <AirdropInfoContainer />
-          <div className="min-h-[24px]">
-            <p className="text-error">{errorMessage}</p>
-          </div>
+          <VestingForm />
         </div>
       </div>
       <img

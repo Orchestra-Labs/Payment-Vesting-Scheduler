@@ -50,9 +50,9 @@ export default function App() {
         signClient: {
           projectId: import.meta.env.VITE_PUBLIC_WALLETCONNECT_PROJECT_ID,
           metadata: {
-            name: 'Airdrop Tracker',
-            description: 'Track your Symphony airdrops',
-            url: 'https://airdrop-tracker.orchestralabs.org/',
+            name: 'Payment Vesting Scheduler',
+            description: 'Schedule cliff and vesting periods for payments',
+            url: 'https://payment-scheduler.orchestralabs.org/',
             icons: ['https://i.imgur.com/a/SucPfrY'],
           },
         },
