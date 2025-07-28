@@ -66,7 +66,7 @@ export const VestingForm = () => {
         duration: durationInSeconds,
         title_prefix: 'Symphony Vesting',
         description_prefix: 'Vesting for Symphony',
-        denom: "note",
+        denom: localAssetRegistry.note.denom,
       } as VestingConfiguration,
       vestingRecords,
     );

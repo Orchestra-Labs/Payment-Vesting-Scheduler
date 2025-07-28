@@ -1,6 +1,5 @@
 import { useChain } from '@cosmos-kit/react';
-import { defaultChainName } from '@/constants';
-import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate';
+import { defaultChainName, localAssetRegistry } from '@/constants';
 import { RewardsVestingOrchestratorClient } from '@orchestra-labs/symphonyjs/contracts/RewardsVestingOrchestrator.client';
 import {
   VestingConfiguration,
@@ -9,6 +8,7 @@ import {
 import { useToast } from '@/hooks/useToast';
 import { hashToHumanReadable } from '@/helpers';
 import { useCosmWasmSigningClient } from './useCosmWasmSigningClient';
+import { Coin } from '@cosmjs/amino';
 
 export const useVestingContract = (contractAddress: string) => {
   const { address, isWalletConnected } =
@@ -64,10 +64,15 @@ export const useVestingContract = (contractAddress: string) => {
       description: 'Waiting for transaction to be included in the block',
     });
     try {
+      const totalAmount: BigInt = records.map(x => BigInt(x.amount)).reduce((acc, element) => {
+        return acc + BigInt(element);
+      });
+      const funds = [{ denom: localAssetRegistry.note.denom, amount: totalAmount.toString() }] as Coin[];
+
       const executeResult = await contractClient.batchVesting({
         configuration,
         records,
-      });
+      }, "auto", "", funds);
       txToastProgress.dismiss();
 
       toast({

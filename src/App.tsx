@@ -14,7 +14,6 @@ import { Loader, ScrollToTop } from '@/components';
 import { defaultChainName } from '@/constants';
 
 import { AppRouter } from './app/Router';
-import { GasPrice } from '@cosmjs/stargate';
 
 const queryClient = new QueryClient({
   defaultOptions: {
