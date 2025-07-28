@@ -1,6 +1,5 @@
 import { useChain } from '@cosmos-kit/react';
-import { defaultChainName } from '@/constants';
-import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate';
+import { defaultChainName, localAssetRegistry } from '@/constants';
 import { RewardsVestingOrchestratorClient } from '@orchestra-labs/symphonyjs/contracts/RewardsVestingOrchestrator.client';
 import {
   VestingConfiguration,
@@ -8,10 +7,13 @@ import {
 } from '@orchestra-labs/symphonyjs/contracts/RewardsVestingOrchestrator.types';
 import { useToast } from '@/hooks/useToast';
 import { hashToHumanReadable } from '@/helpers';
+import { useCosmWasmSigningClient } from './useCosmWasmSigningClient';
+import { Coin } from '@cosmjs/amino';
 
 export const useVestingContract = (contractAddress: string) => {
-  const { getSigningCosmWasmClient, address, isWalletConnected } =
+  const { address, isWalletConnected } =
     useChain(defaultChainName);
+  const { getClient } = useCosmWasmSigningClient();
   const { toast } = useToast();
 
   const copyToClipboard = (txHash: string) => {
@@ -47,11 +49,12 @@ export const useVestingContract = (contractAddress: string) => {
       return;
     }
 
-    console.log('client', await getSigningCosmWasmClient());
+    const cosmWasmClient = await getClient();
+    console.log('client', cosmWasmClient);
 
     const contractClient = new RewardsVestingOrchestratorClient(
       // @ts-expect-error "symphonyjs uses next version of cosmjs"
-      (await getSigningCosmWasmClient()) as SigningCosmWasmClient,
+      cosmWasmClient,
       address,
       contractAddress,
     );
@@ -61,10 +64,15 @@ export const useVestingContract = (contractAddress: string) => {
       description: 'Waiting for transaction to be included in the block',
     });
     try {
+      const totalAmount: BigInt = records.map(x => BigInt(x.amount)).reduce((acc, element) => {
+        return acc + BigInt(element);
+      });
+      const funds = [{ denom: localAssetRegistry.note.denom, amount: totalAmount.toString() }] as Coin[];
+
       const executeResult = await contractClient.batchVesting({
         configuration,
         records,
-      });
+      }, "auto", "", funds);
       txToastProgress.dismiss();
 
       toast({

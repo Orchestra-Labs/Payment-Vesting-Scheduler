@@ -15,7 +15,7 @@ export const chainEndpoint = {
 
 export const vestingOrchestratorContractAddress =
   'symphony15nczwuqh0zcu6syeqsc4td6dphql7n2p7cgkl9raz97z5s3zdjrs95zpkl';
-export const vestingContractCodeId = 14;
+export const vestingContractCodeId = 8;
 
 type AssetRegistry = {
   [key: string]: Asset;

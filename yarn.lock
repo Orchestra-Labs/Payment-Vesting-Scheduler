@@ -326,6 +326,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@chain-registry/types@npm:^0.50.181":
+  version: 0.50.181
+  resolution: "@chain-registry/types@npm:0.50.181"
+  checksum: 10c0/34481ec6b711299f83da422f911d86480632f6c483f545c9a5fdc012c7ac8dc49d21d8bb22640ccab662237fe2b1bde31c4adba4d2ff5aaffedb2671b9dbae49
+  languageName: node
+  linkType: hard
+
 "@chain-registry/utils@npm:^1.47.11, @chain-registry/utils@npm:^1.51.168":
   version: 1.51.168
   resolution: "@chain-registry/utils@npm:1.51.168"
@@ -6452,11 +6459,11 @@ __metadata:
   linkType: hard
 
 "chain-registry@npm:^1.63.69":
-  version: 1.69.268
-  resolution: "chain-registry@npm:1.69.268"
+  version: 1.69.290
+  resolution: "chain-registry@npm:1.69.290"
   dependencies:
-    "@chain-registry/types": "npm:^0.50.168"
-  checksum: 10c0/55e2465fc605726fc04410449dbe4d451d1186ec35d0cdc54f7620ed5dfa68c2627179bbba92e2eda8cc88f1793434c6f9fb02518bac78313fea3d506871dc38
+    "@chain-registry/types": "npm:^0.50.181"
+  checksum: 10c0/b06c1dffff8d38b82cba0122fbf58d031c0225a4baa1763e0079cf13eec3c33d90a8068f60740149f40046fef403cd61c4de6697e760b3d919f1278c329ec80e
   languageName: node
   linkType: hard
 
@@ -9938,6 +9945,7 @@ __metadata:
   dependencies:
     "@chain-registry/types": "npm:^0.45.65"
     "@cosmjs/amino": "npm:^0.33.1"
+    "@cosmjs/cosmwasm-stargate": "npm:^0.33.1"
     "@cosmjs/launchpad": "npm:^0.27.1"
     "@cosmjs/proto-signing": "npm:^0.33.1"
     "@cosmjs/stargate": "npm:^0.33.1"
