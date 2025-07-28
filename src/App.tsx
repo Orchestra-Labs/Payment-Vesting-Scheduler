@@ -2,7 +2,6 @@ import '@interchain-ui/react/styles';
 
 import { wallets as keplrWallets } from '@cosmos-kit/keplr';
 import { wallets as leapWallets } from '@cosmos-kit/leap-mobile';
-import { wallets as ariaWallets } from '@cosmos-kit/aria-extension';
 import { ChainProvider } from '@cosmos-kit/react';
 import { getSigningCosmosClientOptions } from '@orchestra-labs/symphonyjs';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -15,6 +14,7 @@ import { Loader, ScrollToTop } from '@/components';
 import { defaultChainName } from '@/constants';
 
 import { AppRouter } from './app/Router';
+import { GasPrice } from '@cosmjs/stargate';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,10 +34,7 @@ const signerOptions: SignerOptions = {
   preferredSignType: (_: unknown) => {
     // `preferredSignType` determines which signer is preferred for `getOfflineSigner` method. By default `amino`. It might affect the `OfflineSigner` used in `signingStargateClient` and `signingCosmwasmClient`. But if only one signer is provided, `getOfflineSigner` will always return this signer, `preferredSignType` won't affect anything.
     return 'direct';
-  },
-  signingCosmwasm: (_: unknown) => {
-    return getSigningCosmWasmClientOptions();
-  },
+  }
 };
 
 export default function App() {
@@ -47,7 +44,7 @@ export default function App() {
     <ChainProvider
       chains={supportedChains} // supported chains
       assetLists={assets} // supported asset lists
-      wallets={[...keplrWallets, ...leapWallets, ...ariaWallets]} // supported wallets,
+      wallets={[...keplrWallets, ...leapWallets]} // supported wallets,
       signerOptions={signerOptions}
       walletConnectOptions={{
         signClient: {

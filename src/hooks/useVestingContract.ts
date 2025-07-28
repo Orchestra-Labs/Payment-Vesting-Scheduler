@@ -8,10 +8,12 @@ import {
 } from '@orchestra-labs/symphonyjs/contracts/RewardsVestingOrchestrator.types';
 import { useToast } from '@/hooks/useToast';
 import { hashToHumanReadable } from '@/helpers';
+import { useCosmWasmSigningClient } from './useCosmWasmSigningClient';
 
 export const useVestingContract = (contractAddress: string) => {
-  const { getSigningCosmWasmClient, address, isWalletConnected } =
+  const { address, isWalletConnected } =
     useChain(defaultChainName);
+  const { getClient } = useCosmWasmSigningClient();
   const { toast } = useToast();
 
   const copyToClipboard = (txHash: string) => {
@@ -47,11 +49,12 @@ export const useVestingContract = (contractAddress: string) => {
       return;
     }
 
-    console.log('client', await getSigningCosmWasmClient());
+    const cosmWasmClient = await getClient();
+    console.log('client', cosmWasmClient);
 
     const contractClient = new RewardsVestingOrchestratorClient(
       // @ts-expect-error "symphonyjs uses next version of cosmjs"
-      (await getSigningCosmWasmClient()) as SigningCosmWasmClient,
+      cosmWasmClient,
       address,
       contractAddress,
     );

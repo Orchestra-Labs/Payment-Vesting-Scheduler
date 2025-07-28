@@ -6451,15 +6451,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chain-registry@npm:^1.63.69":
-  version: 1.69.268
-  resolution: "chain-registry@npm:1.69.268"
-  dependencies:
-    "@chain-registry/types": "npm:^0.50.168"
-  checksum: 10c0/55e2465fc605726fc04410449dbe4d451d1186ec35d0cdc54f7620ed5dfa68c2627179bbba92e2eda8cc88f1793434c6f9fb02518bac78313fea3d506871dc38
-  languageName: node
-  linkType: hard
-
 "chalk@npm:^4.0.0, chalk@npm:^4.1.2":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
@@ -9938,6 +9929,7 @@ __metadata:
   dependencies:
     "@chain-registry/types": "npm:^0.45.65"
     "@cosmjs/amino": "npm:^0.33.1"
+    "@cosmjs/cosmwasm-stargate": "npm:^0.33.1"
     "@cosmjs/launchpad": "npm:^0.27.1"
     "@cosmjs/proto-signing": "npm:^0.33.1"
     "@cosmjs/stargate": "npm:^0.33.1"
@@ -9966,7 +9958,6 @@ __metadata:
     autoprefixer: "npm:~10.4.19"
     bech32: "npm:^2.0.0"
     bignumber.js: "npm:^9.1.2"
-    chain-registry: "npm:^1.63.69"
     class-variance-authority: "npm:~0.7.0"
     clsx: "npm:~2.1.1"
     cosmos-kit: "npm:^2.19.0"

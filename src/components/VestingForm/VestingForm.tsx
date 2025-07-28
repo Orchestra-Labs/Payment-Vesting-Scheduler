@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useVestingContract } from '@/hooks/useVestingContract';
 import {
   VestingConfiguration,
@@ -26,6 +26,7 @@ export const VestingForm = () => {
   const { toast } = useToast();
 
   const { submitTx } = useVestingContract(vestingOrchestratorContractAddress);
+
 
   const handleSubmit = async () => {
     if (!cliffYears || !cliffMonths) {
@@ -65,7 +66,7 @@ export const VestingForm = () => {
         duration: durationInSeconds,
         title_prefix: 'Symphony Vesting',
         description_prefix: 'Vesting for Symphony',
-        denom: localAssetRegistry.note.denom,
+        denom: "note",
       } as VestingConfiguration,
       vestingRecords,
     );
