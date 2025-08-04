@@ -1,18 +1,20 @@
-import { useEffect, useState } from 'react';
-import { useVestingContract } from '@/hooks/useVestingContract';
 import {
   VestingConfiguration,
   VestingRecord,
 } from '@orchestra-labs/symphonyjs/contracts/RewardsVestingOrchestrator.types';
+import { useState } from 'react';
+
 import {
   localAssetRegistry,
   vestingContractCodeId,
   vestingOrchestratorContractAddress,
 } from '@/constants';
 import { useToast } from '@/hooks';
-import { Card, CardContent, CardHeader, CardTitle } from '../Card';
+import { useVestingContract } from '@/hooks/useVestingContract';
+
+import { NumericInput } from '@/components';
 import { Button } from '../Button';
-import { NumericInput } from '../NumericInput/NumericInput';
+import { Card, CardContent, CardHeader, CardTitle } from '../Card';
 
 export const VestingForm = () => {
   const [contractCodeId, setContractCodeId] = useState<number | null>(
@@ -26,7 +28,6 @@ export const VestingForm = () => {
   const { toast } = useToast();
 
   const { submitTx } = useVestingContract(vestingOrchestratorContractAddress);
-
 
   const handleSubmit = async () => {
     if (!cliffYears || !cliffMonths) {
