@@ -1,8 +1,8 @@
 import { Asset } from '@/sections';
 
-export const rpcUrl = 'https://symphony-api.kleomedes.network';
-export const defaultChainName = 'symphonytestnet';
-export const walletPrefix = 'symphony1';
+export const rpcUrl = 'https://rpc-main-symphony.vinjan.xyz';
+export const defaultChainName = 'symphony';
+export const walletPrefix = 'symphony';
 export const IBCPrefix = 'ibc/';
 export const lesserExponentDefault = 0;
 export const greaterExponentDefault = 6;
@@ -14,8 +14,8 @@ export const chainEndpoint = {
 };
 
 export const vestingOrchestratorContractAddress =
-  'symphony15nczwuqh0zcu6syeqsc4td6dphql7n2p7cgkl9raz97z5s3zdjrs95zpkl';
-export const vestingContractCodeId = 15;
+  'symphony1wug8sewp6cedgkmrmvhl3lf3tulagm9hnvy8p0rppz9yjw0g4wtqxy47yl';
+export const vestingContractCodeId = 1;
 
 type AssetRegistry = {
   [key: string]: Asset;
