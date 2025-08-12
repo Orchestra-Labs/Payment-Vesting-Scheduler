@@ -1,5 +1,4 @@
 import { defaultChainName } from "@/constants";
-import { Chain } from "@chain-registry/types";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { GasPrice } from "@cosmjs/stargate";
 import { useChain } from "@cosmos-kit/react";
