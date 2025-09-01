@@ -6,7 +6,7 @@ import { wallets as ariaWallets } from '@cosmos-kit/aria-extension';
 import { ChainProvider } from '@cosmos-kit/react';
 import { getSigningCosmosClientOptions } from '@orchestra-labs/symphonyjs';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { assets, chains } from 'chain-registry/testnet';
+import { assets, chains } from 'chain-registry';
 import { SignerOptions } from 'cosmos-kit';
 import { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
@@ -15,6 +15,7 @@ import { Loader, ScrollToTop } from '@/components';
 import { defaultChainName } from '@/constants';
 
 import { AppRouter } from './app/Router';
+import { MainWalletBase } from '@cosmos-kit/core';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,11 +41,17 @@ const signerOptions: SignerOptions = {
 export default function App() {
   const supportedChains = chains.filter(c => c.chain_name === defaultChainName);
 
+  const wallets: MainWalletBase[] = [
+    ...keplrWallets,
+    ...leapWallets,
+    ...ariaWallets
+  ] as MainWalletBase[];
+
   return (
     <ChainProvider
       chains={supportedChains} // supported chains
       assetLists={assets} // supported asset lists
-      wallets={[...keplrWallets, ...leapWallets, ...ariaWallets]} // supported wallets,
+      wallets={wallets} // supported wallets,
       signerOptions={signerOptions}
       walletConnectOptions={{
         signClient: {
