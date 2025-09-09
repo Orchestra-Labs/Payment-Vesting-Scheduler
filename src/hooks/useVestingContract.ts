@@ -6,7 +6,7 @@ import {
   VestingRecord,
 } from '@orchestra-labs/symphonyjs/contracts/RewardsVestingOrchestrator.types';
 import { useToast } from '@/hooks/useToast';
-import { hashToHumanReadable } from '@/helpers';
+import { hashToHumanReadable, isValidBech32Address } from '@/helpers';
 import { useCosmWasmSigningClient } from './useCosmWasmSigningClient';
 import { Coin } from '@cosmjs/amino';
 import { VestingRecipient } from '@/types';
@@ -23,6 +23,11 @@ export const useVestingContract = (contractAddress: string) => {
       title: 'Copied to clipboard!',
       description: `Transaction hash ${hashToHumanReadable(txHash)} has been copied.`,
     });
+  };
+
+  // Function to normalize address to lowercase
+  const normalizeAddress = (address: string): string => {
+    return address.toLowerCase();
   };
 
   const submitTx = async (
@@ -66,19 +71,34 @@ export const useVestingContract = (contractAddress: string) => {
       console.log('=== TRANSFORMING VESTING RECIPIENTS TO RECORDS ===');
       console.log('Original recipients:', recipients);
 
-      // Transform VestingRecipient[] to VestingRecord[]
-      const vestingRecords: VestingRecord[] = recipients.flatMap(recipient =>
-        recipient.entries.map(entry => ({
-          address: recipient.recipient,
+      // Transform VestingRecipient[] to VestingRecord[] with address validation
+      const vestingRecords: VestingRecord[] = recipients.flatMap(recipient => {
+        const normalizedAddress = normalizeAddress(recipient.recipient);
+
+        // Skip invalid addresses
+        if (!isValidBech32Address(normalizedAddress)) {
+          console.warn(`Skipping invalid address: ${recipient.recipient}`);
+          return [];
+        }
+
+        return recipient.entries.map(entry => ({
+          address: normalizedAddress,
           amount:
             typeof entry.amount === 'number'
               ? entry.amount.toString()
               : entry.amount,
-        })),
-      );
+        }));
+      });
 
       console.log('Transformed vesting records:', vestingRecords);
       console.log('=== TRANSFORMATION COMPLETE ===');
+
+      // Check if we have any valid records left
+      if (vestingRecords.length === 0) {
+        throw new Error(
+          'No valid vesting records found after filtering invalid addresses',
+        );
+      }
 
       console.log('=== CALCULATING TOTAL AMOUNT ===');
 
