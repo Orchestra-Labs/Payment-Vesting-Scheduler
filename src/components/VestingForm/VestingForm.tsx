@@ -30,19 +30,21 @@ export const VestingForm = () => {
   const { submitTx } = useVestingContract(vestingOrchestratorContractAddress);
 
   const handleSubmit = async () => {
-    if (!cliffYears || !cliffMonths) {
+    if (cliffYears === null || cliffMonths === null) {
       toast({
         variant: 'destructive',
         title: 'Invalid cliff date!',
         description: 'Please fill in all the required fields',
       });
+      return;
     }
-    if (!durationDays) {
+    if (durationDays === null) {
       toast({
         variant: 'destructive',
         title: 'Invalid duration!',
         description: 'Please fill in all the required fields',
       });
+      return;
     }
     if (!jsonInput) {
       toast({
@@ -53,9 +55,34 @@ export const VestingForm = () => {
       return;
     }
 
-    const cliffOffset = new Date(cliffYears!, cliffMonths!, 1).getTime(); // Convert to seconds
+    // Calculate the cliff date - ensure it's at least tomorrow
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0); // Start of tomorrow
+
+    let cliffDate: Date;
+
+    if (cliffYears === 0 && cliffMonths === 0) {
+      // If both are 0, use tomorrow as the minimum cliff date
+      cliffDate = tomorrow;
+    } else {
+      // Calculate the cliff date based on user input
+      cliffDate = new Date();
+      cliffDate.setFullYear(cliffDate.getFullYear() + cliffYears);
+      cliffDate.setMonth(cliffDate.getMonth() + cliffMonths);
+      cliffDate.setDate(1); // First day of the month
+      cliffDate.setHours(0, 0, 0, 0); // Start of day
+
+      // Ensure cliff date is at least tomorrow
+      if (cliffDate.getTime() < tomorrow.getTime()) {
+        cliffDate = tomorrow;
+      }
+    }
+
+    const cliffOffset = cliffDate.getTime(); // Convert to milliseconds
     const epochTimeNanoSeconds = (cliffOffset * 1_000_000).toString(); // Convert to nanoseconds
-    const durationInSeconds = durationDays! * 24 * 60 * 60;
+    const durationInSeconds = durationDays * 24 * 60 * 60;
 
     const vestingRecords = JSON.parse(jsonInput) as VestingRecord[];
 
