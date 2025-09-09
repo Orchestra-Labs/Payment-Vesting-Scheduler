@@ -1,6 +1,6 @@
 import { Asset } from '@/sections';
 
-export const rpcUrl = 'https://rpc-main-symphony.vinjan.xyz';
+export const rpcUrl = 'https://symphony-rpc.cogwheel.zone/';
 export const defaultChainName = 'symphony';
 export const walletPrefix = 'symphony';
 export const IBCPrefix = 'ibc/';
