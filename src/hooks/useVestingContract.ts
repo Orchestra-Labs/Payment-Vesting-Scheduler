@@ -9,10 +9,10 @@ import { useToast } from '@/hooks/useToast';
 import { hashToHumanReadable } from '@/helpers';
 import { useCosmWasmSigningClient } from './useCosmWasmSigningClient';
 import { Coin } from '@cosmjs/amino';
+import { VestingRecipient } from '@/types';
 
 export const useVestingContract = (contractAddress: string) => {
-  const { address, isWalletConnected } =
-    useChain(defaultChainName);
+  const { address, isWalletConnected } = useChain(defaultChainName);
   const { getClient } = useCosmWasmSigningClient();
   const { toast } = useToast();
 
@@ -27,15 +27,14 @@ export const useVestingContract = (contractAddress: string) => {
 
   const submitTx = async (
     configuration: VestingConfiguration,
-    records: VestingRecord[],
+    recipients: VestingRecipient[],
   ) => {
-    if (!configuration || records.length === 0) {
+    if (!configuration || recipients.length === 0) {
       toast({
         variant: 'destructive',
         title: 'Tx Failed!',
         description: 'Please fill in all the required fields',
       });
-
       return;
     }
 
@@ -45,7 +44,6 @@ export const useVestingContract = (contractAddress: string) => {
         title: 'Tx Failed!',
         description: 'Please connect a wallet',
       });
-
       return;
     }
 
@@ -63,16 +61,65 @@ export const useVestingContract = (contractAddress: string) => {
       title: 'Tx in Progress',
       description: 'Waiting for transaction to be included in the block',
     });
-    try {
-      const totalAmount: BigInt = records.map(x => BigInt(x.amount)).reduce((acc, element) => {
-        return acc + BigInt(element);
-      });
-      const funds = [{ denom: localAssetRegistry.note.denom, amount: totalAmount.toString() }] as Coin[];
 
-      const executeResult = await contractClient.batchVesting({
-        configuration,
-        records,
-      }, "auto", "", funds);
+    try {
+      console.log('=== TRANSFORMING VESTING RECIPIENTS TO RECORDS ===');
+      console.log('Original recipients:', recipients);
+
+      // Transform VestingRecipient[] to VestingRecord[]
+      const vestingRecords: VestingRecord[] = recipients.flatMap(recipient =>
+        recipient.entries.map(entry => ({
+          address: recipient.recipient,
+          amount:
+            typeof entry.amount === 'number'
+              ? entry.amount.toString()
+              : entry.amount,
+        })),
+      );
+
+      console.log('Transformed vesting records:', vestingRecords);
+      console.log('=== TRANSFORMATION COMPLETE ===');
+
+      console.log('=== CALCULATING TOTAL AMOUNT ===');
+
+      // Calculate total amount from the transformed records
+      const totalAmount = vestingRecords.reduce((acc, record) => {
+        try {
+          console.log(`Processing record amount:`, record.amount);
+          const amountBigInt = BigInt(record.amount);
+          return acc + amountBigInt;
+        } catch (error) {
+          console.error(
+            `Error converting amount to BigInt:`,
+            record.amount,
+            error,
+          );
+          throw new Error(`Invalid amount format: ${record.amount}`);
+        }
+      }, BigInt(0));
+
+      console.log('Total amount calculated:', totalAmount.toString());
+      console.log('=== TOTAL AMOUNT CALCULATION COMPLETE ===');
+
+      const funds = [
+        {
+          denom: localAssetRegistry.note.denom,
+          amount: totalAmount.toString(),
+        },
+      ] as Coin[];
+
+      console.log('Funds being sent:', funds);
+
+      const executeResult = await contractClient.batchVesting(
+        {
+          configuration,
+          records: vestingRecords, // Use the transformed records
+        },
+        'auto',
+        '',
+        funds,
+      );
+
       txToastProgress.dismiss();
 
       toast({
@@ -81,6 +128,7 @@ export const useVestingContract = (contractAddress: string) => {
         onClick: () => copyToClipboard(executeResult.transactionHash),
       });
     } catch (error) {
+      console.error('Transaction failed with error:', error);
       txToastProgress.dismiss();
       toast({
         variant: 'destructive',

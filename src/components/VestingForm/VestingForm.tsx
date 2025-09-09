@@ -1,7 +1,4 @@
-import {
-  VestingConfiguration,
-  VestingRecord,
-} from '@orchestra-labs/symphonyjs/contracts/RewardsVestingOrchestrator.types';
+import { VestingConfiguration } from '@orchestra-labs/symphonyjs/contracts/RewardsVestingOrchestrator.types';
 import { useState } from 'react';
 
 import {
@@ -15,6 +12,7 @@ import { useVestingContract } from '@/hooks/useVestingContract';
 import { NumericInput } from '@/components';
 import { Button } from '../Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../Card';
+import { VestingRecipient } from '@/types';
 
 export const VestingForm = () => {
   const [contractCodeId, setContractCodeId] = useState<number | null>(
@@ -84,7 +82,7 @@ export const VestingForm = () => {
     const epochTimeNanoSeconds = (cliffOffset * 1_000_000).toString(); // Convert to nanoseconds
     const durationInSeconds = durationDays * 24 * 60 * 60;
 
-    const vestingRecords = JSON.parse(jsonInput) as VestingRecord[];
+    const vestingRecipients = JSON.parse(jsonInput) as VestingRecipient[];
 
     await submitTx(
       {
@@ -96,7 +94,7 @@ export const VestingForm = () => {
         description_prefix: 'Vesting for Symphony',
         denom: localAssetRegistry.note.denom,
       } as VestingConfiguration,
-      vestingRecords,
+      vestingRecipients,
     );
   };
 
