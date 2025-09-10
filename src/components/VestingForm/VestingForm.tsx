@@ -84,8 +84,8 @@ export const VestingForm = () => {
 
     const vestingRecipients = JSON.parse(jsonInput) as VestingRecipient[];
 
-    await submitTx(
-      {
+    await submitTx({
+      configuration: {
         contract_code_id: contractCodeId,
         schedule: 'saturating_linear',
         start_time: epochTimeNanoSeconds,
@@ -94,8 +94,10 @@ export const VestingForm = () => {
         description_prefix: 'Vesting for Symphony',
         denom: localAssetRegistry.note.denom,
       } as VestingConfiguration,
-      vestingRecipients,
-    );
+      recipients: vestingRecipients,
+      batchSize: 5,
+      startFromBatch: 2,
+    });
   };
 
   return (
